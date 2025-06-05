@@ -6,6 +6,7 @@ using LabApp.Services;
 using LabApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using LabApp.Middleware;
 
 namespace LabApp
 {
@@ -86,6 +87,7 @@ namespace LabApp
             }
 
             app.UseHttpsRedirection();
+            app.UseHeaderCheck();
 
             app.UseAuthentication();
 
