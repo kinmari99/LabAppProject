@@ -1,55 +1,87 @@
-﻿using LabApp.Dtos;
+﻿using LabApp.Data;
+using LabApp.Dtos;
+using LabApp.Models;
+using LabApp.Services;
+using Microsoft.EntityFrameworkCore;
 
-namespace LabApp.Services
+public class DeviceService : IDeviceService
 {
-    public class DeviceService:IDeviceService
+    private readonly ApplicationDbContext _context;
+
+    public DeviceService(ApplicationDbContext context)
     {
-        private readonly List<DeviceDto> _devices = new();
-        private int _idCounter = 1;
+        _context = context;
+    }
 
-        public Task<List<DeviceDto>> GetAllAsync()
-        {
-            return Task.FromResult(_devices);
-        }
-
-        public Task<DeviceDto?> GetByIdAsync(int id)
-        {
-            var device = _devices.FirstOrDefault(d => d.Id == id);
-            return Task.FromResult(device);
-        }
-
-        public Task<DeviceDto> CreateAsync(CreateDeviceDto dto)
-        {
-            var device = new DeviceDto
+    public async Task<List<DeviceDto>> GetAllAsync()
+    {
+        return await _context.Devices
+            .Select(d => new DeviceDto
             {
-                Id = _idCounter++,
-                Name = dto.Name,
-                Model = dto.Model,
-                SerialNumber = dto.SerialNumber,
-                IsOperational = true
-            };
-            _devices.Add(device);
-            return Task.FromResult(device);
-        }
+                Id = d.Id,
+                Name = d.Name,
+                Model = d.Model,
+                SerialNumber = d.SerialNumber,
+                IsOperational = d.IsOperational
+            })
+            .ToListAsync();
+    }
 
-        public Task<bool> UpdateAsync(int id, UpdateDeviceDto dto)
+    public async Task<DeviceDto?> GetByIdAsync(int id)
+    {
+        var device = await _context.Devices.FindAsync(id);
+        if (device == null) return null;
+
+        return new DeviceDto
         {
-            var device = _devices.FirstOrDefault(d => d.Id == id);
-            if (device == null)
-                return Task.FromResult(false);
+            Id = device.Id,
+            Name = device.Name,
+            Model = device.Model,
+            SerialNumber = device.SerialNumber,
+            IsOperational = device.IsOperational
+        };
+    }
 
-            device.IsOperational = dto.IsOperational;
-            return Task.FromResult(true);
-        }
-
-        public Task<bool> DeleteAsync(int id)
+    public async Task<DeviceDto> CreateAsync(CreateDeviceDto dto)
+    {
+        var device = new Device
         {
-            var device = _devices.FirstOrDefault(d => d.Id == id);
-            if (device == null)
-                return Task.FromResult(false);
+            Name = dto.Name,
+            Model = dto.Model,
+            SerialNumber = dto.SerialNumber,
+            IsOperational = true
+        };
 
-            _devices.Remove(device);
-            return Task.FromResult(true);
-        }
+        _context.Devices.Add(device);
+        await _context.SaveChangesAsync();
+
+        return new DeviceDto
+        {
+            Id = device.Id,
+            Name = device.Name,
+            Model = device.Model,
+            SerialNumber = device.SerialNumber,
+            IsOperational = device.IsOperational
+        };
+    }
+
+    public async Task<bool> UpdateAsync(int id, UpdateDeviceDto dto)
+    {
+        var device = await _context.Devices.FindAsync(id);
+        if (device == null) return false;
+
+        device.IsOperational = dto.IsOperational;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var device = await _context.Devices.FindAsync(id);
+        if (device == null) return false;
+
+        _context.Devices.Remove(device);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

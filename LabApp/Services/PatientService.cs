@@ -1,57 +1,95 @@
-﻿using LabApp.Dtos;
+﻿using LabApp.Data;
+using LabApp.Dtos;
+using LabApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LabApp.Services
 {
-    public class PatientService:IPatientService
+    public class PatientService : IPatientService
     {
-        private readonly List<PatientDto> _patients = new();
-        private int _idCounter = 1;
+        private readonly ApplicationDbContext _context;
 
-        public Task<List<PatientDto>> GetAllAsync()
+        public PatientService(ApplicationDbContext context)
         {
-            return Task.FromResult(_patients);
+            _context = context;
         }
 
-        public Task<PatientDto?> GetByIdAsync(int id)
+        public async Task<List<PatientDto>> GetAllAsync()
         {
-            var patient = _patients.FirstOrDefault(p => p.Id == id);
-            return Task.FromResult(patient);
+            return await _context.Patients
+                .Select(p => new PatientDto
+                {
+                    Id = p.Id,
+                    PESEL = p.PESEL,
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    Email = p.Email,
+                    PhoneNumber = p.PhoneNumber
+                })
+                .ToListAsync();
         }
 
-        public Task<PatientDto> CreateAsync(CreatePatientDto dto)
+        public async Task<PatientDto?> GetByIdAsync(int id)
         {
-            var patient = new PatientDto
+            var p = await _context.Patients.FindAsync(id);
+            if (p == null) return null;
+
+            return new PatientDto
             {
-                Id = _idCounter++,
+                Id = p.Id,
+                PESEL = p.PESEL,
+                FirstName = p.FirstName,
+                LastName = p.LastName,
+                Email = p.Email,
+                PhoneNumber = p.PhoneNumber
+            };
+        }
+
+        public async Task<PatientDto> CreateAsync(CreatePatientDto dto)
+        {
+            var patient = new Patient
+            {
                 PESEL = dto.PESEL,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Email = dto.Email,
                 PhoneNumber = dto.PhoneNumber
             };
-            _patients.Add(patient);
-            return Task.FromResult(patient);
+
+            _context.Patients.Add(patient);
+            await _context.SaveChangesAsync();
+
+            return new PatientDto
+            {
+                Id = patient.Id,
+                PESEL = patient.PESEL,
+                FirstName = patient.FirstName,
+                LastName = patient.LastName,
+                Email = patient.Email,
+                PhoneNumber = patient.PhoneNumber
+            };
         }
 
-        public Task<bool> UpdateAsync(int id, UpdatePatientDto dto)
+        public async Task<bool> UpdateAsync(int id, UpdatePatientDto dto)
         {
-            var patient = _patients.FirstOrDefault(p => p.Id == id);
-            if (patient == null)
-                return Task.FromResult(false);
+            var p = await _context.Patients.FindAsync(id);
+            if (p == null) return false;
 
-            patient.LastName = dto.LastName;
-            patient.PhoneNumber = dto.PhoneNumber;
-            return Task.FromResult(true);
+            p.LastName = dto.LastName;
+            p.PhoneNumber = dto.PhoneNumber;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var patient = _patients.FirstOrDefault(p => p.Id == id);
-            if (patient == null)
-                return Task.FromResult(false);
+            var p = await _context.Patients.FindAsync(id);
+            if (p == null) return false;
 
-            _patients.Remove(patient);
-            return Task.FromResult(true);
+            _context.Patients.Remove(p);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

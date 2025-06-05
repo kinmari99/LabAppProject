@@ -4,17 +4,20 @@
     {
         public int Id { get; set; }
         public int PatientId { get; set; }
+        public int DiagnosticianId { get; set; }
+        public int DeviceId { get; set; }
         public DateTime OrderedAt { get; set; }
-        public List<string> Tests { get; set; } = new();
+        
     }
     public class CreateOrderDto
     {
         public int PatientId { get; set; }
-        public List<string> Tests { get; set; } = new();
+        public int DiagnosticianId { get; set; }
+        public int DeviceId { get; set; }
     }
     public class UpdateOrderDto
     {
-        public List<string> Tests { get; set; } = new();
+        public int DeviceId { get; set; }
     }
 
 }

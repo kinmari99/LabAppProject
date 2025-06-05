@@ -1,5 +1,7 @@
 
 using LabApp.Services;
+using LabApp.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace LabApp
 {
@@ -8,6 +10,8 @@ namespace LabApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("LabDb"));
 
             // Add services to the container.
 

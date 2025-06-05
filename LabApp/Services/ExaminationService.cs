@@ -1,62 +1,105 @@
-﻿using LabApp.Dtos;
+﻿using LabApp.Data;
+using LabApp.Dtos;
+using LabApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LabApp.Services
 {
-    public class ExaminationService:IExaminationService
+    public class ExaminationService : IExaminationService
     {
-        private readonly List<ExaminationDto> _examinations = new();
-        private int _idCounter = 1;
+        private readonly ApplicationDbContext _context;
 
-        public Task<List<ExaminationDto>> GetAllAsync()
+        public ExaminationService(ApplicationDbContext context)
         {
-            return Task.FromResult(_examinations);
+            _context = context;
         }
 
-        public Task<ExaminationDto?> GetByIdAsync(int id)
+        public async Task<List<ExaminationDto>> GetAllAsync()
         {
-            var exam = _examinations.FirstOrDefault(e => e.Id == id);
-            return Task.FromResult(exam);
+            return await _context.Examinations
+                .Select(e => new ExaminationDto
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Description = e.Description,
+                    Unit = e.Unit,
+                    LowerRange = e.LowerRange,
+                    UpperRange = e.UpperRange,
+                    Price = e.Price
+                })
+                .ToListAsync();
         }
 
-        public Task<ExaminationDto> CreateAsync(CreateExaminationDto dto)
+        public async Task<ExaminationDto?> GetByIdAsync(int id)
         {
-            var exam = new ExaminationDto
+            var e = await _context.Examinations.FindAsync(id);
+            if (e == null) return null;
+
+            return new ExaminationDto
             {
-                Id = _idCounter++,
+                Id = e.Id,
+                Name = e.Name,
+                Description = e.Description,
+                Unit = e.Unit,
+                LowerRange = e.LowerRange,
+                UpperRange = e.UpperRange,
+                Price = e.Price
+            };
+        }
+
+        public async Task<ExaminationDto> CreateAsync(CreateExaminationDto dto)
+        {
+            var exam = new Examination
+            {
                 Name = dto.Name,
                 Description = dto.Description,
                 Unit = dto.Unit,
                 LowerRange = dto.LowerRange,
                 UpperRange = dto.UpperRange,
-                Price = dto.Price
+                Price = dto.Price,
+                OrderId = dto.OrderId,
+                DeviceId = dto.DeviceId
             };
-            _examinations.Add(exam);
-            return Task.FromResult(exam);
+
+            _context.Examinations.Add(exam);
+            await _context.SaveChangesAsync();
+
+            return new ExaminationDto
+            {
+                Id = exam.Id,
+                Name = exam.Name,
+                Description = exam.Description,
+                Unit = exam.Unit,
+                LowerRange = exam.LowerRange,
+                UpperRange = exam.UpperRange,
+                Price = exam.Price
+            };
         }
 
-        public Task<bool> UpdateAsync(int id, UpdateExaminationDto dto)
+        public async Task<bool> UpdateAsync(int id, UpdateExaminationDto dto)
         {
-            var exam = _examinations.FirstOrDefault(e => e.Id == id);
-            if (exam == null)
-                return Task.FromResult(false);
+            var e = await _context.Examinations.FindAsync(id);
+            if (e == null) return false;
 
-            exam.Name = dto.Name;
-            exam.Description = dto.Description;
-            exam.Unit = dto.Unit;
-            exam.LowerRange = dto.LowerRange;
-            exam.UpperRange = dto.UpperRange;
-            exam.Price = dto.Price;
-            return Task.FromResult(true);
+            e.Name = dto.Name;
+            e.Description = dto.Description;
+            e.Unit = dto.Unit;
+            e.LowerRange = dto.LowerRange;
+            e.UpperRange = dto.UpperRange;
+            e.Price = dto.Price;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var exam = _examinations.FirstOrDefault(e => e.Id == id);
-            if (exam == null)
-                return Task.FromResult(false);
+            var e = await _context.Examinations.FindAsync(id);
+            if (e == null) return false;
 
-            _examinations.Remove(exam);
-            return Task.FromResult(true);
+            _context.Examinations.Remove(e);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

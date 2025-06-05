@@ -1,55 +1,89 @@
-﻿using LabApp.Dtos;
+﻿using LabApp.Data;
+using LabApp.Dtos;
+using LabApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LabApp.Services
 {
-    public class OrderService: IOrderService
+    public class OrderService : IOrderService
     {
-        private readonly List<OrderDto> _orders = new();
-        private int _idCounter = 1;
+        private readonly ApplicationDbContext _context;
 
-        public Task<List<OrderDto>> GetAllAsync()
+        public OrderService(ApplicationDbContext context)
         {
-            return Task.FromResult(_orders);
+            _context = context;
         }
 
-        public Task<OrderDto?> GetByIdAsync(int id)
+        public async Task<List<OrderDto>> GetAllAsync()
         {
-            var order = _orders.FirstOrDefault(o => o.Id == id);
-            return Task.FromResult(order);
+            return await _context.Orders
+                .Select(o => new OrderDto
+                {
+                    Id = o.Id,
+                    PatientId = o.PatientId,
+                    DiagnosticianId = o.DiagnosticianId,
+                    DeviceId = o.DeviceId,
+                    OrderedAt = o.OrderedAt
+                })
+                .ToListAsync();
         }
 
-        public Task<OrderDto> CreateAsync(CreateOrderDto dto)
+        public async Task<OrderDto?> GetByIdAsync(int id)
         {
-            var newOrder = new OrderDto
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return null;
+
+            return new OrderDto
             {
-                Id = _idCounter++,
+                Id = order.Id,
+                PatientId = order.PatientId,
+                DiagnosticianId = order.DiagnosticianId,
+                DeviceId = order.DeviceId,
+                OrderedAt = order.OrderedAt
+            };
+        }
+
+        public async Task<OrderDto> CreateAsync(CreateOrderDto dto)
+        {
+            var order = new Order
+            {
                 PatientId = dto.PatientId,
-                OrderedAt = DateTime.UtcNow,
-                Tests = dto.Tests
+                DiagnosticianId = dto.DiagnosticianId,
+                DeviceId = dto.DeviceId,
+                OrderedAt = DateTime.UtcNow
             };
 
-            _orders.Add(newOrder);
-            return Task.FromResult(newOrder);
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            return new OrderDto
+            {
+                Id = order.Id,
+                PatientId = order.PatientId,
+                DiagnosticianId = order.DiagnosticianId,
+                DeviceId = order.DeviceId,
+                OrderedAt = order.OrderedAt
+            };
         }
 
-        public Task<bool> UpdateAsync(int id, UpdateOrderDto dto)
+        public async Task<bool> UpdateAsync(int id, UpdateOrderDto dto)
         {
-            var order = _orders.FirstOrDefault(o => o.Id == id);
-            if (order == null)
-                return Task.FromResult(false);
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return false;
 
-            order.Tests = dto.Tests;
-            return Task.FromResult(true);
+            
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var order = _orders.FirstOrDefault(o => o.Id == id);
-            if (order == null)
-                return Task.FromResult(false);
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) return false;
 
-            _orders.Remove(order);
-            return Task.FromResult(true);
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
