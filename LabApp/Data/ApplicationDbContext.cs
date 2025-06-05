@@ -16,5 +16,7 @@ namespace LabApp.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<Examination> Examinations { get; set; }
         public DbSet<Result> Results { get; set; }
+
+        public DbSet<User> Users { get; set; }
     }
 }

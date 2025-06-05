@@ -1,5 +1,6 @@
 ﻿using LabApp.Dtos;
 using LabApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LabApp.Controllers
@@ -14,14 +15,14 @@ namespace LabApp.Controllers
         {
             _orderService = orderService;
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<OrderDto>>> GetAll()
         {
             var orders = await _orderService.GetAllAsync();
             return Ok(orders);
         }
-
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderDto>> GetById(int id)
         {
@@ -31,14 +32,14 @@ namespace LabApp.Controllers
 
             return Ok(order);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<OrderDto>> Create([FromBody] CreateOrderDto dto)
         {
             var created = await _orderService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateOrderDto dto)
         {
@@ -48,7 +49,7 @@ namespace LabApp.Controllers
 
             return NoContent();
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

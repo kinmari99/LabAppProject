@@ -1,5 +1,6 @@
 ﻿using LabApp.Dtos;
 using LabApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LabApp.Controllers
@@ -14,14 +15,14 @@ namespace LabApp.Controllers
         {
             _resultService = resultService;
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<ResultDto>>> GetAll()
         {
             var results = await _resultService.GetAllAsync();
             return Ok(results);
         }
-
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<ResultDto>> GetById(int id)
         {
@@ -31,21 +32,21 @@ namespace LabApp.Controllers
 
             return Ok(result);
         }
-
+        [Authorize]
         [HttpGet("order/{orderId}")]
         public async Task<ActionResult<List<ResultDto>>> GetByOrder(int orderId)
         {
             var results = await _resultService.GetByOrderIdAsync(orderId);
             return Ok(results);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<ResultDto>> Create([FromBody] CreateResultDto dto)
         {
             var result = await _resultService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateResultDto dto)
         {
@@ -55,7 +56,7 @@ namespace LabApp.Controllers
 
             return NoContent();
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
