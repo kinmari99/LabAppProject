@@ -21,6 +21,7 @@ namespace LabApp
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddGrpc();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
@@ -78,6 +79,17 @@ namespace LabApp
             });
 
             var app = builder.Build();
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                context.Devices.AddRange(
+                    new Device { Name = "Mikroskop", Model = "MX-200", SerialNumber = "ABC123", IsOperational = true },
+                    new Device { Name = "Wirowka", Model = "CF-500", SerialNumber = "XYZ789", IsOperational = false }
+                );
+
+                context.SaveChanges();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -95,6 +107,9 @@ namespace LabApp
 
 
             app.MapControllers();
+
+            app.MapGrpcService<GrpcDeviceService>();
+            app.MapGet("/", () => "gRPC dzia³a. U¿yj klienta gRPC.");
 
             app.Run();
         }

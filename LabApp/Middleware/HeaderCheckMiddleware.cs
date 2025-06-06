@@ -11,7 +11,16 @@
 
         public async Task InvokeAsync(HttpContext context)
         {
-            
+            var path = context.Request.Path.ToString();
+            var isGrpc = context.Request.ContentType?.StartsWith("application/grpc") == true;
+            if (isGrpc || path == "/")
+            {
+                await _next(context);
+                return;
+            }
+
+
+
             if (!context.Request.Headers.ContainsKey("X-App-Client"))
             {
                 context.Response.StatusCode = 400;
