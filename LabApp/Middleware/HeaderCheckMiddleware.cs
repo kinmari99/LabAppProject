@@ -13,7 +13,7 @@
         {
             var path = context.Request.Path.ToString();
             var isGrpc = context.Request.ContentType?.StartsWith("application/grpc") == true;
-            if (isGrpc || path == "/")
+            if (isGrpc || path == "/" || path.StartsWith("/swagger") || path.StartsWith("/api/Auth"))
             {
                 await _next(context);
                 return;

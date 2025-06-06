@@ -7,6 +7,8 @@ using LabApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using LabApp.Middleware;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.OpenApi.Any;
 
 namespace LabApp
 {
@@ -49,6 +51,7 @@ namespace LabApp
             new string[] {}
         }
     });
+                options.OperationFilter<AddClientHeaderFilter>();
             });
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
@@ -112,7 +115,7 @@ namespace LabApp
             }
 
             app.UseHttpsRedirection();
-            //app.UseHeaderCheck();
+           app.UseHeaderCheck();
 
             app.UseAuthentication();
 
