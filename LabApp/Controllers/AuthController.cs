@@ -20,6 +20,7 @@ namespace LabApp.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
+
             var success = await _authService.RegisterAsync(dto);
             if (!success)
                 return BadRequest("Użytkownik o podanej nazwie już istnieje.");
@@ -34,6 +35,7 @@ namespace LabApp.Controllers
             if (response == null)
                 return Unauthorized("Nieprawidłowy login lub hasło.");
 
+            Response.Cookies.Append("jwt", response.Token, new CookieOptions { HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict });
             return Ok(response);
         }
 

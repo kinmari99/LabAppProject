@@ -1,0 +1,7 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@model AdminModel
+@attribute [Authorize(Roles = "Admin")]
+
+<h2>Panel administracyjny</h2>
+<p>Witaj, @User.Identity?.Name</p>

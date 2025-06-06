@@ -76,6 +76,19 @@ namespace LabApp
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                       
+                        var token = context.Request.Cookies["jwt"];
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            context.Token = token;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             var app = builder.Build();
@@ -99,7 +112,7 @@ namespace LabApp
             }
 
             app.UseHttpsRedirection();
-            app.UseHeaderCheck();
+            //app.UseHeaderCheck();
 
             app.UseAuthentication();
 

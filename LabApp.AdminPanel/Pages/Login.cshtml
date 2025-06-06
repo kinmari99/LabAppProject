@@ -1,0 +1,22 @@
+﻿@page
+@model LabApp.AdminPanel.Pages.LoginModel
+@{
+    ViewData["Title"] = "Logowanie";
+}
+
+<h2>Zaloguj się</h2>
+
+<form method="post">
+    <label for="Username">Login</label>
+    <input type="text" name="Username" required />
+
+    <label for="Password">Hasło</label>
+    <input type="password" name="Password" required />
+
+    <button type="submit">Zaloguj</button>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <p style="color:red">@Model.ErrorMessage</p>
+    }
+</form>

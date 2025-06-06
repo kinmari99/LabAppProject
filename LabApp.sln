@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LabApp", "LabApp\LabApp.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcClient", "GrpcClient\GrpcClient.csproj", "{B54253D0-A99B-4ECB-A98D-847792DF9848}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabApp.AdminPanel", "LabApp.AdminPanel\LabApp.AdminPanel.csproj", "{D1A44BAB-55FB-4C63-ADA8-8C3F115C945F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B54253D0-A99B-4ECB-A98D-847792DF9848}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B54253D0-A99B-4ECB-A98D-847792DF9848}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B54253D0-A99B-4ECB-A98D-847792DF9848}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1A44BAB-55FB-4C63-ADA8-8C3F115C945F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1A44BAB-55FB-4C63-ADA8-8C3F115C945F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1A44BAB-55FB-4C63-ADA8-8C3F115C945F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1A44BAB-55FB-4C63-ADA8-8C3F115C945F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

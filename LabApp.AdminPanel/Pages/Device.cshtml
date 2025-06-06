@@ -1,0 +1,17 @@
+﻿@page
+@model DeviceModel
+<h2>Urządzenie</h2>
+
+<form method="post">
+    <label>Podaj ID urządzenia:</label>
+    <input asp-for="DeviceId" />
+    <button type="submit">Szukaj</button>
+</form>
+
+@if (Model.Device != null)
+{
+    <p><strong>Nazwa:</strong> @Model.Device.Name</p>
+    <p><strong>Model:</strong> @Model.Device.Model</p>
+    <p><strong>Numer seryjny:</strong> @Model.Device.SerialNumber</p>
+    <p><strong>Status:</strong> @(Model.Device.IsOperational ? "Działa" : "Nie działa")</p>
+}
