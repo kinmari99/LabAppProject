@@ -33,7 +33,7 @@ namespace LabApp.Services
                 IsOperational = device.IsOperational
             };
         }
-        public override async Task<DevicesReply> GetAllDevices(EmptyRequest request, ServerCallContext context)
+        public override async Task<DevicesReply> GetAllDevices(DeviceEmptyRequest request, ServerCallContext context)
         {
             var devices = await _context.Devices.ToListAsync();
 
@@ -94,7 +94,7 @@ namespace LabApp.Services
                 IsOperational = device.IsOperational
             };
         }
-        public override async Task<EmptyReply> DeleteDevice(DeviceRequest request, ServerCallContext context)
+        public override async Task<DeviceEmptyReply> DeleteDevice(DeviceRequest request, ServerCallContext context)
         {
             var device = await _context.Devices.FirstOrDefaultAsync(d => d.Id == request.Id);
 
@@ -104,7 +104,7 @@ namespace LabApp.Services
             _context.Devices.Remove(device);
             await _context.SaveChangesAsync();
 
-            return new EmptyReply();
+            return new DeviceEmptyReply();
         }
 
 

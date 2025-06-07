@@ -125,7 +125,9 @@ namespace LabApp
             app.MapControllers();
 
             app.MapGrpcService<GrpcDeviceService>();
+            app.MapGrpcService<GrpcDiagnosticianService>();
             app.MapGet("/", () => "gRPC dzia³a. U¿yj klienta gRPC.");
+
 
             app.Run();
         }

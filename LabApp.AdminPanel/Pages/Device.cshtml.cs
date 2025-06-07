@@ -24,7 +24,7 @@ namespace LabApp.AdminPanel.Pages
             using var channel = GrpcChannel.ForAddress("https://localhost:7199");
             var client = new DeviceServiceGrpc.DeviceServiceGrpcClient(channel);
 
-            var response = await client.GetAllDevicesAsync(new EmptyRequest());
+            var response = await client.GetAllDevicesAsync(new DeviceEmptyRequest());
 
             Devices = response.Devices.Select(d => new DeviceViewModel
             {
