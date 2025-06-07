@@ -109,6 +109,12 @@ namespace LabApp
                     new Diagnostician { FirstName = "Piotr", LastName = "Nowak", PWZDL = "23456", Email = "pnowak@labo.pl", Specialization = "Chemia kliniczna" }
                     );
 
+                context.Examinations.AddRange(
+                    new Examination { Name = "OB", Description = "Odczyn opadania krwinek czerwonych. Tzw. Odczyn Biernackiego", Unit = "mm/h", LowerRange = "5", UpperRange = "15", Price = 5 },
+                   new Examination { Name = "Morfologia CBC", Description = "Morfologia 3diff", Unit = "", LowerRange = "", UpperRange = "", Price = 20 }
+
+                    );
+
                 context.SaveChanges();
             }
 
@@ -131,6 +137,8 @@ namespace LabApp
 
             app.MapGrpcService<GrpcDeviceService>();
             app.MapGrpcService<GrpcDiagnosticianService>();
+            app.MapGrpcService<GrpcExaminationService>();
+
             app.MapGet("/", () => "gRPC dzia³a. U¿yj klienta gRPC.");
 
 

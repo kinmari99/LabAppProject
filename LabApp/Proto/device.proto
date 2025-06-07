@@ -10,7 +10,7 @@ service DeviceServiceGrpc {
   rpc DeleteDevice (DeviceRequest) returns (DeviceEmptyReply);
 }
 
-// poniżej definicje komunikatów
+
 message DeviceRequest {
   int32 id = 1;
 }

@@ -23,6 +23,7 @@
 	<ItemGroup>
 		<Protobuf Include="..\LabApp\Proto\device.proto" GrpcServices="Client" />
 		<Protobuf Include="..\LabApp\Proto\diagnostician.proto" GrpcServices="Client" />
+		<Protobuf Include="..\LabApp\Proto\examination.proto" GrpcServices="Client" />
 	</ItemGroup>
 
 </Project>

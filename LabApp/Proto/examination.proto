@@ -1,0 +1,52 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "LabApp.gRPC";
+
+service ExaminationServiceGrpc {
+  rpc GetAllExaminations (ExaminationRequest) returns (ExaminationListReply);
+  rpc GetExaminationById (ExaminationRequest) returns (ExaminationReply);
+  rpc AddExamination (ExaminationCreateRequest) returns (ExaminationReply);
+  rpc UpdateExamination (ExaminationUpdateRequest) returns (ExaminationReply);
+  rpc DeleteExamination (ExaminationRequest) returns (ExaminationEmptyReply);
+}
+
+message ExaminationEmptyReply {}
+
+message ExaminationRequest {
+  int32 id = 1;
+}
+
+message ExaminationReply {
+  int32 id = 1;
+  string Name = 2;
+  string Description = 3;
+  string Unit = 4;
+  string LowerRange = 5;
+  string UpperRange = 6;
+  int32 Price = 7 ;
+}
+
+message ExaminationCreateRequest {
+ string Name = 1;
+  string Description = 2;
+  string Unit = 3;
+  string LowerRange = 4;
+  string UpperRange = 5;
+  int32 Price = 6 ;
+}
+
+message ExaminationUpdateRequest {
+ int32 id = 1;
+  string Name = 2;
+  string Description = 3;
+  string Unit = 4;
+  string LowerRange = 5;
+  string UpperRange = 6;
+  int32 Price = 7 ;
+}
+
+message ExaminationListReply {
+  repeated ExaminationReply examinations = 1;
+}
+
+

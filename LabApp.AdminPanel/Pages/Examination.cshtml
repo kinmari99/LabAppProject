@@ -1,0 +1,92 @@
+﻿@page
+@model ExaminationModel
+<h2>Badania</h2>
+
+<h3>Szukaj badań</h3>
+<form method="post" asp-page-handler="Search">
+    <input asp-for="ExaminationId" placeholder="ID badań" />
+    <button type="submit">Szukaj</button>
+</form>
+
+@if (Model.Examination != null)
+{
+    <p><strong>Nazwa:</strong> @Model.Examination.Name</p>
+    <p><strong>Opis:</strong> @Model.Examination.Description</p>
+    <p><strong>Jednostka:</strong> @Model.Examination.Unit</p>
+      <p><strong>Górny zakres referencyjny:</strong> @Model.Examination.UpperRange</p>
+        <p><strong>Dolny zakres referencyjny:</strong> @Model.Examination.LowerRange</p>
+    <p><strong>Cena:</strong> @Model.Examination.Price</p>
+    
+}
+
+<h3>Lista badań</h3>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nazwa</th>
+            <th>Opis</th>
+            <th>Jednostka</th>
+            <th>Górny zakres referencyjny</th>
+            <th>Dolny zakres referencyjny</th>
+            <th>Cena</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var examination in Model.Examinations)
+        {
+            <tr>
+                <td>@examination.Id</td>
+                  <td>@examination.Name</td>
+                <td>@examination.Description</td>  
+                <td>@examination.Unit</td>
+                <td>@examination.UpperRange</td>
+                <td>@examination.LowerRange</td>
+                <td>@examination.Price</td>
+               
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+
+                        <form method="post" asp-page-handler="Delete">
+                            <input type="hidden" name="id" value="@examination.Id" />
+                            <button type="submit">Usuń</button>
+                        </form>
+
+
+                        <form method="post" asp-page-handler="Edit">
+                            <input type="hidden" asp-for="InputExamination.Id" value="@examination.Id" />
+                            <input asp-for="InputExamination.Name" value="@examination.Name" />
+                            <input asp-for="InputExamination.Description" value="@examination.Description" />
+                            <input asp-for="InputExamination.Unit" value="@examination.Unit" />
+                            <input asp-for="InputExamination.UpperRange" value="@examination.UpperRange" />
+                            <input asp-for="InputExamination.LowerRange" value="@examination.LowerRange" />
+                            <input asp-for="InputExamination.Price" value="@examination.Price" />
+
+                            <button type="submit">Zapisz</button>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+@if (User.IsInRole("Admin"))
+{
+    <h3>Dodaj nowe badanie (tylko admin)</h3>
+    <form method="post" asp-page-handler="Add">
+        <input asp-for="InputExamination.Name" placeholder="Nazwa" required />
+        <input asp-for="InputExamination.Description" placeholder="Opis" required />
+           <input asp-for="InputExamination.Unit" placeholder="Jednostka" required />
+        <input asp-for="InputExamination.UpperRange" placeholder="Górny zakres referencyjny" required />
+        <input asp-for="InputExamination.LowerRange" placeholder="Dolny zakres referencyjny" required />
+        <input asp-for="InputExamination.Price" placeholder="Cena" required />
+       
+
+        
+
+        <button type="submit">Dodaj</button>
+    </form>
+}
