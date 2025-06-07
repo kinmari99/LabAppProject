@@ -1,10 +1,10 @@
 ﻿@page
 @model DeviceModel
-<h2>Urządzenie</h2>
+<h2>Urządzenia</h2>
 
-<form method="post">
-    <label>Podaj ID urządzenia:</label>
-    <input asp-for="DeviceId" />
+<h3>Szukaj urządzenia</h3>
+<form method="post" asp-page-handler="Search">
+    <input asp-for="DeviceId" placeholder="ID urządzenia" />
     <button type="submit">Szukaj</button>
 </form>
 
@@ -15,3 +15,59 @@
     <p><strong>Numer seryjny:</strong> @Model.Device.SerialNumber</p>
     <p><strong>Status:</strong> @(Model.Device.IsOperational ? "Działa" : "Nie działa")</p>
 }
+
+<h3>Lista urządzeń</h3>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nazwa</th>
+            <th>Model</th>
+            <th>Numer seryjny</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var device in Model.Devices)
+        {
+            <tr>
+                <td>@device.Id</td>
+                <td>@device.Name</td>
+                <td>@device.Model</td>
+                <td>@device.SerialNumber</td>
+                <td>@(device.IsOperational ? "Działa" : "Nie działa")</td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        
+                        <form method="post" asp-page-handler="Delete">
+                            <input type="hidden" name="id" value="@device.Id" />
+                            <button type="submit">Usuń</button>
+                        </form>
+
+                        
+                        <form method="post" asp-page-handler="Edit">
+                            <input type="hidden" asp-for="InputDevice.Id" value="@device.Id" />
+                            <input asp-for="InputDevice.Name" value="@device.Name" />
+                            <input asp-for="InputDevice.Model" value="@device.Model" />
+                            <input asp-for="InputDevice.SerialNumber" value="@device.SerialNumber" />
+                            <input type="checkbox" asp-for="InputDevice.IsOperational" checked="@device.IsOperational" />
+                            <button type="submit">Zapisz</button>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+@if (User.IsInRole("Admin"))
+{
+    <h3>Dodaj nowe urządzenie (tylko admin)</h3>
+<form method="post" asp-page-handler="Add">
+    <input asp-for="InputDevice.Name" placeholder="Nazwa" required />
+    <input asp-for="InputDevice.Model" placeholder="Model" required />
+    <input asp-for="InputDevice.SerialNumber" placeholder="Numer seryjny" required />
+    <label>Status operacyjny</label>
+    <input asp-for="InputDevice.IsOperational" type="checkbox" />
+    <button type="submit">Dodaj</button>
+</form>}

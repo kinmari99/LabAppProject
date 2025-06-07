@@ -4,11 +4,20 @@ option csharp_namespace = "LabApp.gRPC";
 
 service DeviceServiceGrpc {
   rpc GetDeviceById (DeviceRequest) returns (DeviceReply);
+  rpc GetAllDevices (EmptyRequest) returns (DevicesReply);
+  rpc AddDevice (DeviceCreateRequest) returns (DeviceReply);
+  rpc UpdateDevice (DeviceUpdateRequest) returns (DeviceReply);
+  rpc DeleteDevice (DeviceRequest) returns (EmptyReply);
 }
 
+// poniżej definicje komunikatów
 message DeviceRequest {
   int32 id = 1;
 }
+
+message EmptyRequest {}
+
+message EmptyReply {}
 
 message DeviceReply {
   int32 id = 1;
@@ -16,4 +25,23 @@ message DeviceReply {
   string model = 3;
   string serialNumber = 4;
   bool isOperational = 5;
+}
+
+message DeviceCreateRequest {
+  string name = 1;
+  string model = 2;
+  string serialNumber = 3;
+  bool isOperational = 4;
+}
+
+message DeviceUpdateRequest {
+  int32 id = 1;
+  string name = 2;
+  string model = 3;
+  string serialNumber = 4;
+  bool isOperational = 5;
+}
+
+message DevicesReply {
+  repeated DeviceReply devices = 1;
 }
