@@ -104,6 +104,11 @@ namespace LabApp
                     new Device { Name = "Wirowka", Model = "CF-500", SerialNumber = "XYZ789", IsOperational = false }
                 );
 
+                context.Diagnosticians.AddRange(
+                    new Diagnostician { FirstName = "Anna", LastName = "Kowalska", PWZDL = "12345", Email = "akowal@labo.pl", Specialization = "Mikrobiologia" },
+                    new Diagnostician { FirstName = "Piotr", LastName = "Nowak", PWZDL = "23456", Email = "pnowak@labo.pl", Specialization = "Chemia kliniczna" }
+                    );
+
                 context.SaveChanges();
             }
 

@@ -5,9 +5,9 @@ VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LabApp", "LabApp\LabApp.csproj", "{DDE368C2-337B-4BE1-BAF3-97C762D129E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcClient", "GrpcClient\GrpcClient.csproj", "{B54253D0-A99B-4ECB-A98D-847792DF9848}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcClient", "GrpcClient\GrpcClient.csproj", "{B54253D0-A99B-4ECB-A98D-847792DF9848}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabApp.AdminPanel", "LabApp.AdminPanel\LabApp.AdminPanel.csproj", "{D1A44BAB-55FB-4C63-ADA8-8C3F115C945F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LabApp.AdminPanel", "LabApp.AdminPanel\LabApp.AdminPanel.csproj", "{D1A44BAB-55FB-4C63-ADA8-8C3F115C945F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

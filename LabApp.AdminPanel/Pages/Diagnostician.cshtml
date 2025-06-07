@@ -1,0 +1,81 @@
+﻿@page
+@model DiagnosticianModel
+<h2>Diagności</h2>
+
+<h3>Szukaj diagnostów</h3>
+<form method="post" asp-page-handler="Search">
+    <input asp-for="DiagnosticianId" placeholder="ID diagnosty" />
+    <button type="submit">Szukaj</button>
+</form>
+
+@if (Model.Diagnostician != null)
+{
+    <p><strong>Imię:</strong> @Model.Diagnostician.FirstName</p>
+    <p><strong>Nazwisko:</strong> @Model.Diagnostician.LastName</p>
+    <p><strong>PWZDL:</strong> @Model.Diagnostician.Pwzdl</p>
+    <p><strong>Email:</strong> @Model.Diagnostician.Email</p>
+    <p><strong>Specjalizacja:</strong> @Model.Diagnostician.Specialization</p>
+}
+
+<h3>Lista diagnostów</h3>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>PWZDL</th>
+            <th>Email</th>
+            <th>Specjalizacja</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var diagnostician in Model.Diagnosticians)
+        {
+            <tr>
+                <td>@diagnostician.Id</td>
+                <td>@diagnostician.FirstName</td>
+                <td>@diagnostician.LastName</td>
+                <td>@diagnostician.PWZDL</td>
+                <td>@diagnostician.Email</td>
+                <td>@diagnostician.Specialization</td>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+
+                        <form method="post" asp-page-handler="Delete">
+                            <input type="hidden" name="id" value="@diagnostician.Id" />
+                            <button type="submit">Usuń</button>
+                        </form>
+
+
+                        <form method="post" asp-page-handler="Edit">
+                            <input type="hidden" asp-for="InputDiagnostician.Id" value="@diagnostician.Id" />
+                            <input asp-for="InputDiagnostician.FirstName" value="@diagnostician.FirstName" />
+                            <input asp-for="InputDiagnostician.LastName" value="@diagnostician.LastName" />
+                            <input asp-for="InputDiagnostician.PWZDL" value="@diagnostician.PWZDL" />
+                            <input asp-for="InputDiagnostician.Email" value="@diagnostician.Email" />
+                            <input asp-for="InputDiagnostician.Specialization" value="@diagnostician.Specialization" />
+
+                            <button type="submit">Zapisz</button>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+@if (User.IsInRole("Admin"))
+{
+    <h3>Dodaj nowego diagnostę (tylko admin)</h3>
+    <form method="post" asp-page-handler="Add">
+        <input asp-for="InputDiagnostician.FirstName" placeholder="Imię" required />
+        <input asp-for="InputDiagnostician.LastName" placeholder="Nazwisko" required />
+        <input asp-for="InputDiagnostician.PWZDL" placeholder="PWZDL" required />
+        <input asp-for="InputDiagnostician.Email" placeholder="Email" required />
+        <input asp-for="InputDiagnostician.Specialization" placeholder="Specjalizacja" required />
+        
+        <button type="submit">Dodaj</button>
+    </form>
+}
